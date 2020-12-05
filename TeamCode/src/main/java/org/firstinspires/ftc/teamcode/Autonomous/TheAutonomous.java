@@ -42,6 +42,8 @@ public class TheAutonomous extends LinearOpMode {
         initVuforia();
         initTfod();
 
+        //test
+
         telemetry.update();
         //waitForStart();
 
