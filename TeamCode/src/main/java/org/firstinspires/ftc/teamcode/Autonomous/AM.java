@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-//test
-
 public class AM extends LinearOpMode{
     DcMotor leftFront;
     DcMotor rightFront;
@@ -45,6 +43,73 @@ public class AM extends LinearOpMode{
         rightFront.setTargetPosition(pos);
         leftBack.setTargetPosition(pos);
         rightBack.setTargetPosition(pos);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFront.setPower(pow);
+        rightFront.setPower(pow);
+        leftBack.setPower(pow);
+        rightBack.setPower(pow);
+
+        while (leftFront.isBusy()) idle();
+
+        leftFront.setPower(0.0);
+        rightFront.setPower(0.0);
+        leftBack.setPower(0.0);
+        rightBack.setPower(0.0);
+    }
+
+    // positive meters = left | negative meters = right
+    public void driveLR(double meters, double pow) {
+
+        int pos = (int) (meters * (1120 / .23562 ) + .5);
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setTargetPosition(pos);
+        rightFront.setTargetPosition(-pos);
+        leftBack.setTargetPosition(-pos);
+        rightBack.setTargetPosition(pos);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFront.setPower(pow);
+        rightFront.setPower(pow);
+        leftBack.setPower(pow);
+        rightBack.setPower(pow);
+
+        while (leftFront.isBusy()) idle();
+
+        leftFront.setPower(0.0);
+        rightFront.setPower(0.0);
+        leftBack.setPower(0.0);
+        rightBack.setPower(0.0);
+    }
+
+    // positive degrees = clockwise | negative degrees = counter-clockwise
+    public void rotate(double degrees, double pow) {
+
+        // ticks / degree math
+        int pos = (int) (degrees * (0));
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setTargetPosition(pos);
+        rightFront.setTargetPosition(-pos);
+        leftBack.setTargetPosition(pos);
+        rightBack.setTargetPosition(-pos);
 
         leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
