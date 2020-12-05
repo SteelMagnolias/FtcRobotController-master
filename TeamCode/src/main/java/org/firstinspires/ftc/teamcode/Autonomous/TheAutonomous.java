@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -11,8 +13,19 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-@Autonomous(name = "RingAutonomous", group = "Iterative OpMode")
-public class RingAutonomous extends LinearOpMode {
+@Autonomous(name = "TheAutonomous", group = "Iterative OpMode")
+public class TheAutonomous extends LinearOpMode {
+
+    private DcMotor leftFront;
+    private DcMotor rightFront;
+    private DcMotor leftBack;
+    private DcMotor rightBack;
+
+    private DcMotor intake;
+    private DcMotor carousel;
+    private DcMotor flywheel;
+
+    private Servo wobble;
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
@@ -39,7 +52,22 @@ public class RingAutonomous extends LinearOpMode {
             //tfod.setZoom(2.5, 16.0/9.0);
         }
 
-        telemetry.addData("Test", "test");
+        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
+
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        carousel = hardwareMap.get(DcMotor.class, "carousel");
+        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+
+        wobble = hardwareMap.servo.get("wobble");
+
+        AM chad = new AM(leftFront, rightFront, leftBack, rightBack);
+
+        wobble.setPosition(1);
+
+        //telemetry.addData("Test", "test");
         while (!opModeIsActive() && !isStopRequested()) {
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -83,7 +111,41 @@ public class RingAutonomous extends LinearOpMode {
         telemetry.clearAll();
         telemetry.addData("Zone", zone);
         telemetry.update();
-        sleep(10000);
+
+        //drive to x
+        chad.driveFB(+0, .8);
+
+        // shoot
+
+        // strafe and shoot at power-shots
+        for (int i = 0; i < 2; i++) {
+            chad.driveLR(-0, .25);
+            //shoot
+        }
+
+        // rotate and drive to correct zone
+        chad.rotate(+0, .5);
+        chad.driveFB(+0, .8);
+
+        // drop the wobble, move away and rest the arm
+        wobble.setPosition(0);
+        chad.driveLR(+0, .35);
+        wobble.setPosition(1);
+
+        // if zone == B it is easier to get to single ring
+        if (zone.equals("B")) {
+            // rotate to face the rings
+            chad.rotate(-0, .35);
+
+            // grab ring and park on line
+            chad.driveFB(+0, .6);
+            chad.driveFB(-0, .8);
+        }
+
+        // drive backwards to park on launch line
+        else {
+            chad.driveFB(-0, .8);
+        }
     }
 
     private void initVuforia() {
