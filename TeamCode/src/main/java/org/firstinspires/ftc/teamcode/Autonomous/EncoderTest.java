@@ -26,7 +26,7 @@ public class EncoderTest extends LinearOpMode {
 
         waitForStart();
 
-        test.driveFB();
+        //test.driveFB();
 
         /*rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
