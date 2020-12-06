@@ -16,10 +16,7 @@ public class DistanceTest extends OpMode {
     @Override
     public void init() {
         testSensor = hardwareMap.get(DistanceSensor.class, "sensorTest");
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)testSensor;
-
-        //telemetry.addData("range", String.format("%.01f mm", testSensor.getDistance(DistanceUnit.MM)));
-        //telemetry.update();
+        //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)testSensor;
     }
 
     @Override

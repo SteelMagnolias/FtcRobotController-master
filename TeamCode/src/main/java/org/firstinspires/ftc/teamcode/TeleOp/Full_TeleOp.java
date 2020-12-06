@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name="Full_TeleOp", group="Iterative Opmode")
@@ -15,6 +18,11 @@ public class Full_TeleOp extends OpMode
     private DcMotor carousel;
     private DcMotor intake;
     private DcMotor flywheel;
+
+    private DistanceSensor disSensorFront;
+    private DistanceSensor disSensorLeft;
+    private DistanceSensor disSensorRight;
+    private DistanceSensor disSensorBack;
 
     @Override
     public void init() {
@@ -30,6 +38,11 @@ public class Full_TeleOp extends OpMode
         carousel = hardwareMap.get(DcMotor.class, "carousel");
         intake = hardwareMap.get(DcMotor.class, "intake");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+
+        disSensorFront = hardwareMap.get(DistanceSensor.class, "sensorFront");
+        disSensorLeft = hardwareMap.get(DistanceSensor.class, "sensorLeft");
+        disSensorRight = hardwareMap.get(DistanceSensor.class, "sensorRight");
+        disSensorBack = hardwareMap.get(DistanceSensor.class, "sensorBack");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -76,6 +89,16 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("buttonLeft", buttonLeft);
         telemetry.addData("lb", lb);
         telemetry.addData("rb", rb);
+
+        double frontDistance = disSensorFront.getDistance(DistanceUnit.METER);
+        double leftDistance = disSensorLeft.getDistance(DistanceUnit.METER);
+        double rightDistance = disSensorRight.getDistance(DistanceUnit.METER);
+        double backDistance = disSensorBack.getDistance(DistanceUnit.METER);
+
+        telemetry.addData("front distance", frontDistance);
+        telemetry.addData("left distance", leftDistance);
+        telemetry.addData("right distance", rightDistance);
+        telemetry.addData("back distance", backDistance);
 
         double rm = rightx1;
         if (rm > -.1 && rm < .1) rm = 0;
