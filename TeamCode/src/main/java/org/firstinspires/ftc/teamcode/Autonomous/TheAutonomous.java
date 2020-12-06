@@ -115,13 +115,13 @@ public class TheAutonomous extends LinearOpMode {
         telemetry.update();
 
         //drive to x
-        chad.driveFB(+0, .8);
+        chad.driveFB(+1.5, .8);
 
         // shoot
 
         // strafe and shoot at power-shots
         for (int i = 0; i < 2; i++) {
-            chad.driveLR(-0, .25);
+            chad.driveLR(-.23, .25);
             //shoot
         }
 

@@ -238,10 +238,10 @@ public class Full_TeleOp extends OpMode
         }
 
         // Carousel
-        //carousel.setPower(pow);
+        carousel.setPower(pow);
 
         // Intake
-        intake.setPower(pow);
+        intake.setPower(1);
 
         // Flywheel
         if (Math.abs(lefty2) > .1) {
