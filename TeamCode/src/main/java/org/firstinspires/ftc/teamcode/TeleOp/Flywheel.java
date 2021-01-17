@@ -19,7 +19,7 @@ public class Flywheel extends OpMode
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         flywheel  = hardwareMap.get(DcMotor.class, "flywheel");
-        carousel = hardwareMap.get(DcMotor.class, "carousel");
+        //carousel = hardwareMap.get(DcMotor.class, "carousel");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
         // Tell the driver that initialization is complete.
@@ -43,24 +43,24 @@ public class Flywheel extends OpMode
         boolean rb = gamepad1.right_bumper;
         telemetry.addData("lefty1", lefty1);
 
-        if (Math.abs(lefty1) > .1) {
-            flywheel.setPower(lefty1);
+        if (lb) {
+            flywheel.setPower(-1);
         } else {
             flywheel.setPower(0);
         }
-
+        /*
         // Carousel
         if (lb)
             carousel.setPower(0);
         else
             carousel.setPower(-1);
-
+        */
         // Intake
-        if (rb)
+        /*if (rb)
             intake.setPower(0);
         else
-            intake.setPower(-1);
-
+            intake.setPower(1);
+        */
         // Ensures Data Updates
         telemetry.update();
     }

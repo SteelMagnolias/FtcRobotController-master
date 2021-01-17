@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -15,15 +16,17 @@ public class Full_TeleOp extends OpMode
     private DcMotor rightBack;
     private DcMotor leftFront;
     private DcMotor rightFront;
-    private DcMotor carousel;
     private DcMotor intake;
     private DcMotor flywheel;
-
+    private Servo flick;
+    private Servo wobble;
+    private Servo close;
+    /*
     private DistanceSensor disSensorFront;
     private DistanceSensor disSensorLeft;
     private DistanceSensor disSensorRight;
     private DistanceSensor disSensorBack;
-
+    */
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
@@ -35,15 +38,18 @@ public class Full_TeleOp extends OpMode
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        carousel = hardwareMap.get(DcMotor.class, "carousel");
         intake = hardwareMap.get(DcMotor.class, "intake");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
-
+        flick = hardwareMap.get(Servo.class, "flick");
+        wobble = hardwareMap.get(Servo.class, "wobble");
+        flick = hardwareMap.get(Servo.class, "flick");
+        close = hardwareMap.get(Servo.class, "close");
+        /*
         disSensorFront = hardwareMap.get(DistanceSensor.class, "sensorFront");
         disSensorLeft = hardwareMap.get(DistanceSensor.class, "sensorLeft");
         disSensorRight = hardwareMap.get(DistanceSensor.class, "sensorRight");
         disSensorBack = hardwareMap.get(DistanceSensor.class, "sensorBack");
-
+        */
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -51,8 +57,24 @@ public class Full_TeleOp extends OpMode
         flywheel.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
 
+        // Motor encoder setup
+
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+        flick.setPosition(.9);
+        wobble.setPosition(.5);
+
+        flywheel.setPower(0);
+        intake.setPower(0);
     }
 
     /*
@@ -77,6 +99,12 @@ public class Full_TeleOp extends OpMode
         boolean buttonRight = gamepad1.dpad_right;
         boolean lb = gamepad1.left_bumper;
         boolean rb = gamepad1.right_bumper;
+        boolean rb2 = gamepad2.right_bumper;
+        boolean lb2 = gamepad2.left_bumper;
+        boolean x2 = gamepad2.x;
+        boolean a1 = gamepad1.a;
+        boolean a2 = gamepad2.a;
+        boolean b2 = gamepad2.b;
         telemetry.addData("lefty1", lefty1);
         telemetry.addData("leftx1", leftx1);
         telemetry.addData("rightx1", rightx1);
@@ -89,7 +117,10 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("buttonLeft", buttonLeft);
         telemetry.addData("lb", lb);
         telemetry.addData("rb", rb);
-
+        telemetry.addData("a1", a1);
+        telemetry.addData("a2", a2);
+        telemetry.addData("b2", b2);
+        /*
         double frontDistance = disSensorFront.getDistance(DistanceUnit.METER);
         double leftDistance = disSensorLeft.getDistance(DistanceUnit.METER);
         double rightDistance = disSensorRight.getDistance(DistanceUnit.METER);
@@ -99,10 +130,12 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("left distance", leftDistance);
         telemetry.addData("right distance", rightDistance);
         telemetry.addData("back distance", backDistance);
-
+        */
         double rm = rightx1;
         if (rm > -.1 && rm < .1) rm = 0;
-        double pow = .8;
+        double pow;
+        if (a1) pow = 1; // turbo mode
+        else pow = .8;
         double c = Math.hypot(leftx1,lefty1);
         double perct = pow * c;
         if (c <= .1) perct = 0;
@@ -126,7 +159,6 @@ public class Full_TeleOp extends OpMode
         double dir = 1;
         if (theta >= Math.PI) {
             theta -= Math.PI;
-
             dir = -1;
         }
         //if (leftx1 <= 0 && lefty1 >= 0 || leftx1 >= 0 && lefty1 <= 0){
@@ -194,28 +226,7 @@ public class Full_TeleOp extends OpMode
             rightFront.setPower(-pow);
             rightBack.setPower(-pow);
         }
-        else if(rb){
-            // slowly moves clockwise
-            leftFront.setPower(pow);
-            leftBack.setPower (pow);
-            rightFront.setPower (-pow);
-            rightBack.setPower(-pow);
-        }
-        else if(lb){
-            // slowly moves counter-clockwise
-            leftFront.setPower(-pow);
-            leftBack.setPower (-pow);
-            rightFront.setPower (pow);
-            rightBack.setPower(pow);
-        }
-        else {
-            // stops movement
-            leftFront.setPower(0);
-            leftBack.setPower(0);
-            rightFront.setPower(0);
-            rightBack.setPower(0);
-        }
-        if(buttonRight){
+        else if(buttonRight){
             // slowly moves right
             leftFront.setPower(pow);
             leftBack.setPower (-pow);
@@ -237,18 +248,42 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        // Carousel
-        carousel.setPower(pow);
+        if(rb){
+            // slowly moves clockwise
+            leftFront.setPower(pow);
+            leftBack.setPower (pow);
+            rightFront.setPower (-pow);
+            rightBack.setPower(-pow);
+        }
+        else if(lb) {
+            // slowly moves counter-clockwise
+            leftFront.setPower(-pow);
+            leftBack.setPower(-pow);
+            rightFront.setPower(pow);
+            rightBack.setPower(pow);
+        }
+        else {
+            // stops movement
+            leftFront.setPower(0);
+            leftBack.setPower(0);
+            rightFront.setPower(0);
+            rightBack.setPower(0);
+        }
 
-        // Intake
-        intake.setPower(1);
+        if (a2) flick.setPosition(.35);
+        else flick.setPosition(.9);
+
+        if (b2) wobble.setPosition(0);
+        else wobble.setPosition(.5);
+
+        if (rb2) close.setPosition(0);
+        else close.setPosition(.85);
 
         // Flywheel
-        if (Math.abs(lefty2) > .1) {
-            flywheel.setPower(lefty2);
-        } else {
-            flywheel.setPower(0);
-        }
+        if (lb2) flywheel.setPower(1);
+
+        // Intake
+        if (x2) intake.setPower(-1);
 
         // Ensures Data Updates
         telemetry.update();
