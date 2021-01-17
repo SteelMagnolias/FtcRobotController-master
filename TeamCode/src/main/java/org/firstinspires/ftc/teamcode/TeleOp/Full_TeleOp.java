@@ -280,7 +280,20 @@ public class Full_TeleOp extends OpMode
         else close.setPosition(.85);
 
         // Flywheel
-        if (lb2) flywheel.setPower(1);
+        // if (lb2) flywheel.setPower(1);
+        double target;
+        double flypow;
+        if (flywheel.getPower() < .5) flywpow = 0;
+        else flypow = 1;
+        if (lb2 && flypow() == target) {
+            if (flypow == 0) {
+                flywheel.setPower(1);
+                target = 1;
+            } else {
+                flywheel.setPower(0);
+                target = 0;
+            } 
+        }
 
         // Intake
         if (x2) intake.setPower(-1);
