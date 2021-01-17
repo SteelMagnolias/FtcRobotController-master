@@ -274,7 +274,7 @@ public class Full_TeleOp extends OpMode
         else flick.setPosition(.9);
 
         if (b2) wobble.setPosition(0);
-        else wobble.setPosition(.5);
+        else wobble.setPosition(.55);
 
         if (rb2) close.setPosition(0);
         else close.setPosition(.85);
