@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -21,12 +22,15 @@ public class Full_TeleOp extends OpMode
     private Servo flick;
     private Servo wobble;
     private Servo close;
+    private CRServo push;
     /*
     private DistanceSensor disSensorFront;
     private DistanceSensor disSensorLeft;
     private DistanceSensor disSensorRight;
     private DistanceSensor disSensorBack;
     */
+    double target;
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
@@ -44,6 +48,7 @@ public class Full_TeleOp extends OpMode
         wobble = hardwareMap.get(Servo.class, "wobble");
         flick = hardwareMap.get(Servo.class, "flick");
         close = hardwareMap.get(Servo.class, "close");
+        push = hardwareMap.get(CRServo.class, "push");
         /*
         disSensorFront = hardwareMap.get(DistanceSensor.class, "sensorFront");
         disSensorLeft = hardwareMap.get(DistanceSensor.class, "sensorLeft");
@@ -55,15 +60,8 @@ public class Full_TeleOp extends OpMode
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         flywheel.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
 
         // Motor encoder setup
-
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -73,8 +71,12 @@ public class Full_TeleOp extends OpMode
         flick.setPosition(.9);
         wobble.setPosition(.5);
 
+        push.setPower(0);
+
         flywheel.setPower(0);
         intake.setPower(0);
+
+        target = 0;
     }
 
     /*
@@ -90,7 +92,6 @@ public class Full_TeleOp extends OpMode
     {
         // Assigning & Data
         double lefty1 = -(gamepad1.left_stick_y);
-        double lefty2 = -(gamepad2.left_stick_y);
         double leftx1 = gamepad1.left_stick_x;
         double rightx1 = gamepad1.right_stick_x;
         boolean buttonUp = gamepad1.dpad_up;
@@ -101,10 +102,11 @@ public class Full_TeleOp extends OpMode
         boolean rb = gamepad1.right_bumper;
         boolean rb2 = gamepad2.right_bumper;
         boolean lb2 = gamepad2.left_bumper;
-        boolean x2 = gamepad2.x;
         boolean a1 = gamepad1.a;
         boolean a2 = gamepad2.a;
         boolean b2 = gamepad2.b;
+        boolean buttonUp2 = gamepad1.dpad_up;
+        boolean buttonDown2 = gamepad1.dpad_down;
         telemetry.addData("lefty1", lefty1);
         telemetry.addData("leftx1", leftx1);
         telemetry.addData("rightx1", rightx1);
@@ -212,28 +214,28 @@ public class Full_TeleOp extends OpMode
 
         // Below: precision (slower) movement
         pow *= 0.5;
-        if(buttonUp){
+        if (buttonUp){
             // slowly moves forwards
             leftFront.setPower(pow);
             leftBack.setPower(pow);
             rightFront.setPower(pow);
             rightBack.setPower(pow);
         }
-        else if(buttonDown){
+        else if (buttonDown){
             // slowly moves backwards
             leftFront.setPower(-pow);
             leftBack.setPower(-pow);
             rightFront.setPower(-pow);
             rightBack.setPower(-pow);
         }
-        else if(buttonRight){
+        else if (buttonRight){
             // slowly moves right
             leftFront.setPower(pow);
             leftBack.setPower (-pow);
             rightFront.setPower (-pow);
             rightBack.setPower(pow);
         }
-        else if(buttonLeft){
+        else if (buttonLeft){
             // slowly moves left
             leftFront.setPower(-pow);
             leftBack.setPower (pow);
@@ -248,14 +250,14 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if(rb){
+        if (rb){
             // slowly moves clockwise
             leftFront.setPower(pow);
             leftBack.setPower (pow);
             rightFront.setPower (-pow);
             rightBack.setPower(-pow);
         }
-        else if(lb) {
+        else if (lb) {
             // slowly moves counter-clockwise
             leftFront.setPower(-pow);
             leftBack.setPower(-pow);
@@ -280,10 +282,33 @@ public class Full_TeleOp extends OpMode
         else close.setPosition(.85);
 
         // Flywheel
-        if (lb2) flywheel.setPower(1);
+        // if (lb2) flywheel.setPower(1);
+        double flypow;
+        if (flywheel.getPower() < .5) flypow = 0;
+        else flypow = 1;
+        if (lb2 && flypow == target) {
+            if (flypow == 0) {
+                flywheel.setPower(1);
+                target = 1;
+            } else {
+                flywheel.setPower(0);
+                target = 0;
+            }
+        }
 
         // Intake
-        if (x2) intake.setPower(-1);
+        if (buttonUp2) {
+            intake.setPower(1);
+            push.setPower(-1);
+        }
+        else if (buttonDown2) {
+            intake.setPower(-1);
+            push.setPower(1);
+        }
+        else {
+            intake.setPower(0);
+            push.setPower(0);
+        }
 
         // Ensures Data Updates
         telemetry.update();
