@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
@@ -23,14 +21,12 @@ public class Full_TeleOp extends OpMode
     private Servo flick;
     private Servo wobble;
     private Servo close;
-    private CRServo push;
     /*
     private DistanceSensor disSensorFront;
     private DistanceSensor disSensorLeft;
     private DistanceSensor disSensorRight;
     private DistanceSensor disSensorBack;
     */
-    double target;
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
@@ -48,7 +44,6 @@ public class Full_TeleOp extends OpMode
         wobble = hardwareMap.get(Servo.class, "wobble");
         flick = hardwareMap.get(Servo.class, "flick");
         close = hardwareMap.get(Servo.class, "close");
-        push = hardwareMap.get(CRServo.class, "push");
         /*
         disSensorFront = hardwareMap.get(DistanceSensor.class, "sensorFront");
         disSensorLeft = hardwareMap.get(DistanceSensor.class, "sensorLeft");
@@ -64,6 +59,11 @@ public class Full_TeleOp extends OpMode
 
         // Motor encoder setup
 
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -72,15 +72,9 @@ public class Full_TeleOp extends OpMode
 
         flick.setPosition(.9);
         wobble.setPosition(.5);
-        close.setPosition(0);
-
-        //push.setDirection(DcMotorSimple.Direction.FORWARD);
-        push.setPower(0);
 
         flywheel.setPower(0);
         intake.setPower(0);
-
-        target = 0;
     }
 
     /*
@@ -283,30 +277,13 @@ public class Full_TeleOp extends OpMode
         else wobble.setPosition(.55);
 
         if (rb2) close.setPosition(0);
-        else close.setPosition(1);
+        else close.setPosition(.85);
 
         // Flywheel
-        double flypow;
-        if (flywheel.getPower() < .5) flypow = 0;
-        else flypow = 1;
-        if (lb2 && flypow == target) {
-            if (flypow == 0) {
-                flywheel.setPower(1);
-                target = 1;
-            } else {
-                flywheel.setPower(0);
-                target = 0;
-            }
-        }
+        if (lb2) flywheel.setPower(1);
 
         // Intake
-        if (x2) {
-            intake.setPower(-1);
-            push.setPower(-1);
-        } else {
-            intake.setPower(0);
-            push.setPower(0);
-        }
+        if (x2) intake.setPower(-1);
 
         // Ensures Data Updates
         telemetry.update();
