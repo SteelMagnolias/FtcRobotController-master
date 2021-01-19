@@ -22,10 +22,11 @@ public class TheAutonomous extends LinearOpMode {
     private DcMotor rightBack;
 
     private DcMotor intake;
-    private DcMotor carousel;
     private DcMotor flywheel;
 
     private Servo wobble;
+    private Servo close;
+    private Servo flick;
 
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
@@ -51,7 +52,7 @@ public class TheAutonomous extends LinearOpMode {
 
         if (tfod != null) {
             tfod.activate();
-            //tfod.setZoom(2.5, 16.0/9.0);
+            tfod.setZoom(2.5, 16.0/9.0);
         }
 
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
@@ -60,14 +61,17 @@ public class TheAutonomous extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
 
         intake = hardwareMap.get(DcMotor.class, "intake");
-        carousel = hardwareMap.get(DcMotor.class, "carousel");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
         wobble = hardwareMap.servo.get("wobble");
+        close = hardwareMap.servo.get("close");
+        flick = hardwareMap.servo.get("flick");
 
         AM chad = new AM(leftFront, rightFront, leftBack, rightBack);
 
-        wobble.setPosition(1);
+        flick.setPosition(.9);
+        wobble.setPosition(.55);
+        close.setPosition(.86);
 
         //telemetry.addData("Test", "test");
         while (!opModeIsActive() && !isStopRequested()) {
@@ -109,6 +113,8 @@ public class TheAutonomous extends LinearOpMode {
         }
 
         waitForStart();
+
+        tfod.shutdown();
 
         telemetry.clearAll();
         telemetry.addData("Zone", zone);

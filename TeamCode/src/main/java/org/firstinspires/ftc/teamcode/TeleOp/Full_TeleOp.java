@@ -69,7 +69,8 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("Status", "Initialized");
 
         flick.setPosition(.9);
-        wobble.setPosition(.5);
+        wobble.setPosition(.55);
+        close.setPosition(.85);
 
         push.setPower(0);
 
@@ -105,8 +106,8 @@ public class Full_TeleOp extends OpMode
         boolean a1 = gamepad1.a;
         boolean a2 = gamepad2.a;
         boolean b2 = gamepad2.b;
-        boolean buttonUp2 = gamepad1.dpad_up;
-        boolean buttonDown2 = gamepad1.dpad_down;
+        boolean buttonUp2 = gamepad2.dpad_up;
+        boolean buttonDown2 = gamepad2.dpad_down;
         telemetry.addData("lefty1", lefty1);
         telemetry.addData("leftx1", leftx1);
         telemetry.addData("rightx1", rightx1);
@@ -288,13 +289,15 @@ public class Full_TeleOp extends OpMode
         else flypow = 1;
         if (lb2 && flypow == target) {
             if (flypow == 0) {
-                flywheel.setPower(1);
+                flywheel.setPower(.8);
                 target = 1;
             } else {
                 flywheel.setPower(0);
                 target = 0;
             }
         }
+
+        telemetry.addData("flywheel", flywheel.getPower());
 
         // Intake
         if (buttonUp2) {

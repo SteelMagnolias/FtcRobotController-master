@@ -4,15 +4,22 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-public class AMT extends AM {
+public class AMT extends LinearOpMode {
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
 
-    public AMT(DcMotor leftFront, DcMotor rightFront, DcMotor leftBack, DcMotor rightBack) {
-        super(leftFront, rightFront, leftBack, rightBack);
+    public AMT (DcMotor leftFront, DcMotor rightFront, DcMotor leftBack, DcMotor rightBack) {
+        this.leftFront = leftFront;
+        this.rightFront = rightFront;
+        this.leftBack = leftBack;
+        this.rightBack = rightBack;
+
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
@@ -47,7 +54,7 @@ public class AMT extends AM {
         sleep(10);
     }
 
-    // positive = left | negative = right
+    // positive = right | negative = left
     public void driveTLR(double pow, int time) {
         leftFront.setPower(pow);
         rightFront.setPower(-pow);
@@ -74,4 +81,5 @@ public class AMT extends AM {
         rightBack.setPower(0);
         sleep(10);
     }
+
 }

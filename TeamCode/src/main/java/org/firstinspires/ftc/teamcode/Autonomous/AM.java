@@ -20,8 +20,8 @@ public class AM extends LinearOpMode{
         this.leftBack = leftBack;
         this.rightBack = rightBack;
 
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override

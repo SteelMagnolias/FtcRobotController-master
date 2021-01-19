@@ -37,7 +37,7 @@ public class RingTest extends LinearOpMode {
 
         if (tfod != null) {
             tfod.activate();
-            //tfod.setZoom(2.5, 16.0/9.0);
+            tfod.setZoom(2.5, 16.0/9.0);
         }
 
         if (opModeIsActive()) {
@@ -77,7 +77,6 @@ public class RingTest extends LinearOpMode {
         if (tfod != null) {
             tfod.shutdown();
         }
-        waitForStart();
 
     }
 
