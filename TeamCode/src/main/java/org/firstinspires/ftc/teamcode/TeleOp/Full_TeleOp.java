@@ -283,7 +283,9 @@ public class Full_TeleOp extends OpMode
         else close.setPosition(.85);
 
         // Flywheel
-        // if (lb2) flywheel.setPower(1);
+        if (lb2) flywheel.setPower(1);
+        else flywheel.setPower(0);
+        /*
         double flypow;
         if (flywheel.getPower() < .5) flypow = 0;
         else flypow = 1;
@@ -296,6 +298,7 @@ public class Full_TeleOp extends OpMode
                 target = 0;
             }
         }
+        */
 
         telemetry.addData("flywheel", flywheel.getPower());
 
