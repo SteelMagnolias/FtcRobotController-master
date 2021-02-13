@@ -382,6 +382,10 @@ public class Full_TeleOp extends OpMode
             default:
                 grabberArm = GrabberArm.START;
         }
+
+        if (y2 && grabberArm != GrabberArm.START) {
+            grabberArm = GrabberArm.START;
+        }
     }
     @Override
     public void stop() {
