@@ -38,6 +38,10 @@ public class Full_TeleOp extends OpMode
     private Servo flick;
     private Servo wobble;
     private Servo close;
+
+    private double wStart;
+    private double wEnd;
+
     //private CRServo push;
     /*
     private DistanceSensor disSensorFront;
@@ -71,6 +75,10 @@ public class Full_TeleOp extends OpMode
         disSensorRight = hardwareMap.get(DistanceSensor.class, "sensorRight");
         disSensorBack = hardwareMap.get(DistanceSensor.class, "sensorBack");
         */
+
+        wStart = .5;
+        wEnd = 0;
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -85,7 +93,7 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("Status", "Initialized");
 
         flick.setPosition(.9);
-        wobble.setPosition(.55);
+        wobble.setPosition(wStart);
         close.setPosition(.85);
 
         //push.setPower(0);
@@ -293,7 +301,7 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (a2) flick.setPosition(.35);
+        if (rb2) flick.setPosition(.35);
         else flick.setPosition(.9);
 
         /*
@@ -348,34 +356,34 @@ public class Full_TeleOp extends OpMode
         switch(grabberArm) {
             case START:
                 if (x2) {
-                    wobble.setPosition(0);
-                    close.setPosition(.85);
+                    wobble.setPosition(wEnd);
+                    close.setPosition(0);
                     grabberArm = GrabberArm.GRAB;
                 }
                 break;
             case GRAB:
-                if (x2) {
-                    close.setPosition(0);
+                if (b2) {
+                    close.setPosition(.85);
                     grabberArm = GrabberArm.LIFT_INITIAL;
                 }
                 break;
             case LIFT_INITIAL:
                 if (x2) {
-                    wobble.setPosition(.55);
+                    wobble.setPosition(wStart);
                     grabberArm = GrabberArm.RELEASE;
                 }
                 break;
             case RELEASE:
-                if (x2) {
-                    wobble.setPosition(0);
-                    close.setPosition(.85);
+                if (b2) {
+                    wobble.setPosition(wEnd);
+                    close.setPosition(0);
                     grabberArm = GrabberArm.LIFT_FINAL;
                 }
                 break;
             case LIFT_FINAL:
-                if (x2) {
-                    close.setPosition(0);
-                    wobble.setPosition(.55);
+                if (a2) {
+                    close.setPosition(.85);
+                    wobble.setPosition(wStart);
                     grabberArm = GrabberArm.START;
                 }
                 break;
