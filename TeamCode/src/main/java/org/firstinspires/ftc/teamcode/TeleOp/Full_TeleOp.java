@@ -394,6 +394,9 @@ public class Full_TeleOp extends OpMode
         if (y2 && grabberArm != GrabberArm.START) {
             grabberArm = GrabberArm.START;
         }
+        if (a2 && grabberArm != GrabberArm.START && grabberArm != GrabberArm.LIFT_FINAL) {
+            grabberArm = GrabberArm.LIFT_FINAL;
+        }
     }
     @Override
     public void stop() {
