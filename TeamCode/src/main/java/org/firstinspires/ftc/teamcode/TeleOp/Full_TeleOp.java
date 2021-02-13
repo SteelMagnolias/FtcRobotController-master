@@ -13,6 +13,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name="Full_TeleOp", group="Iterative Opmode")
 public class Full_TeleOp extends OpMode
 {
+    public enum Alignment {
+        START,
+        ALIGNMENT_TRUE,
+        ALIGNMENT_FALSE
+    }
+    public enum GrabberArm {
+        START,
+        GRAB,
+        LIFT_INITIAL,
+        RELEASE,
+        LIFT_FINAL
+    }
+
+    Alignment alignment = Alignment.START;
+    GrabberArm grabberArm = GrabberArm.START;
+
     private DcMotor leftBack;
     private DcMotor rightBack;
     private DcMotor leftFront;
@@ -106,6 +122,8 @@ public class Full_TeleOp extends OpMode
         boolean a1 = gamepad1.a;
         boolean a2 = gamepad2.a;
         boolean b2 = gamepad2.b;
+        boolean x2 = gamepad2.x;
+        boolean y2 = gamepad2.y;
         boolean buttonUp2 = gamepad2.dpad_up;
         boolean buttonDown2 = gamepad2.dpad_down;
         telemetry.addData("lefty1", lefty1);
@@ -123,6 +141,8 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("a1", a1);
         telemetry.addData("a2", a2);
         telemetry.addData("b2", b2);
+        telemetry.addData("x2", x2);
+        telemetry.addData("y2", y2);
         /*
         double frontDistance = disSensorFront.getDistance(DistanceUnit.METER);
         double leftDistance = disSensorLeft.getDistance(DistanceUnit.METER);
@@ -276,11 +296,13 @@ public class Full_TeleOp extends OpMode
         if (a2) flick.setPosition(.35);
         else flick.setPosition(.9);
 
+        /*
         if (b2) wobble.setPosition(0);
         else wobble.setPosition(.55);
 
         if (rb2) close.setPosition(0);
         else close.setPosition(.85);
+        */
 
         // Flywheel
         if (lb2) flywheel.setPower(1);
@@ -318,6 +340,48 @@ public class Full_TeleOp extends OpMode
 
         // Ensures Data Updates
         telemetry.update();
+
+        /*  SERVO POSITIONS KEY:
+         *  wobble: up = .55, down = 0
+         *  close: close = 0, open = .85
+         */
+        switch(grabberArm) {
+            case START:
+                if (x2) {
+                    wobble.setPosition(0);
+                    close.setPosition(.85);
+                    grabberArm = GrabberArm.GRAB;
+                }
+                break;
+            case GRAB:
+                if (x2) {
+                    close.setPosition(0);
+                    grabberArm = GrabberArm.LIFT_INITIAL;
+                }
+                break;
+            case LIFT_INITIAL:
+                if (x2) {
+                    wobble.setPosition(.55);
+                    grabberArm = GrabberArm.RELEASE;
+                }
+                break;
+            case RELEASE:
+                if (x2) {
+                    wobble.setPosition(0);
+                    close.setPosition(.85);
+                    grabberArm = GrabberArm.LIFT_FINAL;
+                }
+                break;
+            case LIFT_FINAL:
+                if (x2) {
+                    close.setPosition(0);
+                    wobble.setPosition(.55);
+                    grabberArm = GrabberArm.START;
+                }
+                break;
+            default:
+                grabberArm = GrabberArm.START;
+        }
     }
     @Override
     public void stop() {
