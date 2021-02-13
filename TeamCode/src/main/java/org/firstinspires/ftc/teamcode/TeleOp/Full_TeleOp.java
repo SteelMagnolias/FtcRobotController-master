@@ -22,7 +22,7 @@ public class Full_TeleOp extends OpMode
     private Servo flick;
     private Servo wobble;
     private Servo close;
-    private CRServo push;
+    //private CRServo push;
     /*
     private DistanceSensor disSensorFront;
     private DistanceSensor disSensorLeft;
@@ -48,7 +48,7 @@ public class Full_TeleOp extends OpMode
         wobble = hardwareMap.get(Servo.class, "wobble");
         flick = hardwareMap.get(Servo.class, "flick");
         close = hardwareMap.get(Servo.class, "close");
-        push = hardwareMap.get(CRServo.class, "push");
+        //push = hardwareMap.get(CRServo.class, "push");
         /*
         disSensorFront = hardwareMap.get(DistanceSensor.class, "sensorFront");
         disSensorLeft = hardwareMap.get(DistanceSensor.class, "sensorLeft");
@@ -72,7 +72,7 @@ public class Full_TeleOp extends OpMode
         wobble.setPosition(.55);
         close.setPosition(.85);
 
-        push.setPower(0);
+        //push.setPower(0);
 
         flywheel.setPower(0);
         intake.setPower(0);
@@ -305,15 +305,15 @@ public class Full_TeleOp extends OpMode
         // Intake
         if (buttonUp2) {
             intake.setPower(1);
-            push.setPower(-1);
+            //push.setPower(-1);
         }
         else if (buttonDown2) {
             intake.setPower(-1);
-            push.setPower(1);
+            //push.setPower(1);
         }
         else {
             intake.setPower(0);
-            push.setPower(0);
+            //push.setPower(0);
         }
 
         // Ensures Data Updates

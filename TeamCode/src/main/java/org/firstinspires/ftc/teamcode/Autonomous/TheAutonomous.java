@@ -121,8 +121,25 @@ public class TheAutonomous extends LinearOpMode {
         telemetry.update();
 
         //drive to x
-        chad.driveFB(+1.5, .8);
 
+        // encoder test stuff
+        chad.driveFB(+10, .8);
+
+        telemetry.addData("leftFront Target", leftFront.getTargetPosition());
+        telemetry.addData("rightFront Target", rightFront.getTargetPosition());
+        telemetry.addData("leftBack Target", leftBack.getTargetPosition());
+        telemetry.addData("rightBack Target", rightBack.getTargetPosition());
+
+        sleep (1000);
+
+        chad.stopAll();
+
+        telemetry.addData("leftFront Position", leftFront.getCurrentPosition());
+        telemetry.addData("rightFront Position", rightFront.getCurrentPosition());
+        telemetry.addData("leftBack Position", leftBack.getCurrentPosition());
+        telemetry.addData("rightBack Position", rightBack.getCurrentPosition());
+
+        /*
         // shoot
 
         // strafe and shoot at power-shots
@@ -154,6 +171,8 @@ public class TheAutonomous extends LinearOpMode {
         else {
             chad.driveFB(-0, .8);
         }
+
+         */
     }
 
     private void initVuforia() {

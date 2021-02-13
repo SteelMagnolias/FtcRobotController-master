@@ -60,6 +60,8 @@ public class AM extends LinearOpMode{
         rightFront.setPower(0.0);
         leftBack.setPower(0.0);
         rightBack.setPower(0.0);
+
+
     }
 
     // positive meters = left | negative meters = right
@@ -127,5 +129,12 @@ public class AM extends LinearOpMode{
         rightFront.setPower(0.0);
         leftBack.setPower(0.0);
         rightBack.setPower(0.0);
+    }
+
+    public void stopAll() {
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
     }
 }
