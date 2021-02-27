@@ -57,6 +57,7 @@ public class Drive_Code extends OpMode
         boolean buttonRight = gamepad1.dpad_right;
         boolean lb = gamepad1.left_bumper;
         boolean rb = gamepad1.right_bumper;
+        boolean a1 = gamepad1.a;
         telemetry.addData("lefty1", lefty1);
         telemetry.addData("leftx1", leftx1);
         telemetry.addData("rightx1", rightx1);
@@ -73,132 +74,112 @@ public class Drive_Code extends OpMode
         // Rotational Motion
         double rm = rightx1;
         if (rm > -.1 && rm < .1) rm = 0;
-        // Percent Power
-        double pow = .8;
-        // c = distance from point to origin
+        double pow;
+        if (a1) pow = 1; // turbo mode
+        else pow = .8;
         double c = Math.hypot(leftx1,lefty1);
-        // Perct = Overall Motor Speed
         double perct = pow * c;
         if (c <= .1) perct = 0;
-
-        // Theta (angle on unit circle)
         double theta;
-        // Quadrant 2
+
         if (leftx1 <=0 && lefty1 >= 0 )  {
             theta = Math.atan(Math.abs(leftx1)/Math.abs(lefty1));
             theta += (Math.PI/2);
         } else
-            // Quadrant 3
-            if (leftx1 <0 && lefty1 <= 0 )  {
-                theta = Math.atan(Math.abs(lefty1)/Math.abs(leftx1));
-                theta += (Math.PI);
-            } else
-                // Quadrant 4
-                if (leftx1 >= 0 && lefty1 < 0 )  {
-                    theta = Math.atan(Math.abs(leftx1)/Math.abs(lefty1));
-                    theta += (3*Math.PI/2);
-                } else {
-                    // Quadrant 1
-                    theta = Math.atan(Math.abs(lefty1)/Math.abs(leftx1));
-                }
+        if (leftx1 <0 && lefty1 <= 0 )  {
+            theta = Math.atan(Math.abs(lefty1)/Math.abs(leftx1));
+            theta += (Math.PI);
+        } else
+        if (leftx1 >= 0 && lefty1 < 0 )  {
+            theta = Math.atan(Math.abs(leftx1)/Math.abs(lefty1));
+            theta += (3*Math.PI/2);
+        } else {
+            theta = Math.atan(Math.abs(lefty1)/Math.abs(leftx1));
+        }
 
-        // dir = accounts for reverse in motor power depending on position
-        // (all calculations are done based on position between 0 and pi/2)
         double dir = 1;
         if (theta >= Math.PI) {
             theta -= Math.PI;
             dir = -1;
         }
+        //if (leftx1 <= 0 && lefty1 >= 0 || leftx1 >= 0 && lefty1 <= 0){
+        //   theta += (Math.PI/2);
+        //}
 
-        // Data
         telemetry.addData("pow", pow);
         telemetry.addData("rm", rm);
         telemetry.addData("dir", dir);
         telemetry.addData("c", c);
         telemetry.addData("theta", theta);
 
-        // rf = right front
-        // calculates how far away theta is from the off position (pi/4)
-        // compared to the total possible distance that direction (pi/4)
-        double rf = dir*((theta-(Math.PI/4))/(Math.PI/4));
-        // accounts for if the number is outside the value .setPower() can hold
-        if (rf > 1) rf = 1;
-        if (rf < -1) rf = -1;
-        // multiplies directional power by overall power
-        rf = (perct * rf);
-        // allows for rotation motion (else: returns as NaN [not a number])
-        if (leftx1 < .1 && leftx1 > -.1 && lefty1 < .1 && lefty1 > -.1) rf = 0;
+        double fr = dir*((theta-(Math.PI/4))/(Math.PI/4));
+        if (fr > 1) fr = 1;
+        if(fr < -1) fr = -1;
+        fr = (perct * fr);
+        if (leftx1 == 0 && lefty1 == 0) fr = 0;
 
-        // bl = back left
         double bl = dir*((theta-(Math.PI/4))/(Math.PI/4));
         if (bl > 1) bl = 1;
         if (bl < -1) bl = -1;
         bl = (perct * bl);
         if (leftx1 < .1 && leftx1 > -.1 && lefty1 < .1 && lefty1 > -.1) bl = 0;
 
-        // lf = left front
-        double lf = -dir*((theta-(3*Math.PI/4))/(Math.PI/4));
-        if (lf > 1) lf = 1;
-        if (lf < -1) lf = -1;
-        lf = (perct * lf);
-        if (leftx1 < .1 && leftx1 > -.1 && lefty1 < .1 && lefty1 > -.1) lf = 0;
+        double fl = -dir*((theta-(3*Math.PI/4))/(Math.PI/4));
+        if (fl > 1) fl = 1;
+        if (fl < -1) fl = -1;
+        fl = (perct * fl);
+        if (leftx1 < .1 && leftx1 > -.1 && lefty1 < .1 && lefty1 > -.1) fl = 0;
 
-        // br = back right
         double br = -dir*((theta-(3*Math.PI/4))/(Math.PI/4));
         if (br > 1) br = 1;
         if (br < -1) br = -1;
         br = (perct * br);
         if (leftx1 < .1 && leftx1 > -.1 && lefty1 < .1 && lefty1 > -.1) br = 0;
 
-        // Data
-        telemetry.addData("lf", lf);
-        telemetry.addData("rf", rf);
+        telemetry.addData("fl", fl);
+        telemetry.addData("fr", fr);
         telemetry.addData("bl", bl);
         telemetry.addData("br", br);
 
-        // Data ("raw" value)
         telemetry.addData("rlf", -dir*((theta-(3*Math.PI/4))/(Math.PI/4)));
         telemetry.addData("rrf", dir*((theta-(3*Math.PI/4))/(Math.PI/4)));
         telemetry.addData("rbl", dir*((theta-(3*Math.PI/4))/(Math.PI/4)) );
         telemetry.addData("rbr", -dir*((theta-(3*Math.PI/4))/(Math.PI/4)));
 
-
-        // Sets Power and Adds Rotational Movement
-        leftFront.setPower(lf + rm);
-        leftBack.setPower(bl + rm);
-        // br and rf switch (accounts for unexplained yet consistent error)
-        rightFront.setPower(br - rm);
-        rightBack.setPower(rf - rm);
+        leftFront.setPower(fl + rightx1);
+        leftBack.setPower(bl + rightx1);
+        rightFront.setPower(fr - rightx1);
+        rightBack.setPower(br - rightx1);
 
         // Below: precision (slower) movement
         pow *= 0.5;
-        if(buttonUp){
+        if (buttonUp){
             // slowly moves forwards
             leftFront.setPower(pow);
             leftBack.setPower(pow);
             rightFront.setPower(pow);
             rightBack.setPower(pow);
         }
-        else if(buttonDown){
+        else if (buttonDown){
             // slowly moves backwards
             leftFront.setPower(-pow);
             leftBack.setPower(-pow);
             rightFront.setPower(-pow);
             rightBack.setPower(-pow);
         }
-        else if(rb){
-            // slowly moves clockwise
+        else if (buttonRight){
+            // slowly moves right
             leftFront.setPower(pow);
-            leftBack.setPower (pow);
-            rightFront.setPower (-pow);
-            rightBack.setPower(-pow);
-        }
-        else if(lb){
-            // slowly moves counter-clockwise
-            leftFront.setPower(-pow);
             leftBack.setPower (-pow);
-            rightFront.setPower (pow);
+            rightFront.setPower (-pow);
             rightBack.setPower(pow);
+        }
+        else if (buttonLeft){
+            // slowly moves left
+            leftFront.setPower(-pow);
+            leftBack.setPower (pow);
+            rightFront.setPower (pow);
+            rightBack.setPower(-pow);
         }
         else {
             // stops movement
@@ -207,18 +188,19 @@ public class Drive_Code extends OpMode
             rightFront.setPower(0);
             rightBack.setPower(0);
         }
-        if(buttonRight){
-            // slowly moves right
+
+        if (rb){
+            // slowly moves clockwise
             leftFront.setPower(pow);
-            leftBack.setPower (-pow);
-            rightFront.setPower (pow);
-            rightBack.setPower(-pow);
-        }
-        else if(buttonLeft){
-            // slowly moves left
-            leftFront.setPower(-pow);
             leftBack.setPower (pow);
             rightFront.setPower (-pow);
+            rightBack.setPower(-pow);
+        }
+        else if (lb) {
+            // slowly moves counter-clockwise
+            leftFront.setPower(-pow);
+            leftBack.setPower(-pow);
+            rightFront.setPower(pow);
             rightBack.setPower(pow);
         }
         else {

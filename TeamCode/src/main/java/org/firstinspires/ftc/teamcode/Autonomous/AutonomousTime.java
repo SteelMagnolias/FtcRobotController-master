@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -48,6 +49,13 @@ public class AutonomousTime extends LinearOpMode {
 
         String zone = "";
 
+        double fBack = .9;
+        double fShoot = .35;
+        double wUp = .5;
+        double wDown = 0;
+        double cClose = .85;
+        double cOpen = 0;
+
         if (tfod != null) {
             tfod.activate();
             tfod.setZoom(2.5, 16.0/9.0);
@@ -67,9 +75,9 @@ public class AutonomousTime extends LinearOpMode {
 
         AMT chad = new AMT(leftFront, rightFront, leftBack, rightBack);
 
-        flick.setPosition(.9);
-        wobble.setPosition(.55);
-        close.setPosition(.85);
+        flick.setPosition(fBack);
+        wobble.setPosition(wDown);
+        close.setPosition(cClose);
 
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -121,137 +129,29 @@ public class AutonomousTime extends LinearOpMode {
         telemetry.addData("Zone", zone);
         telemetry.update();
 
-        chad.driveTFB(.8, 1000);
-        sleep(10);
-        chad.driveTLR(-.8, 160);
-        sleep(10);
-        chad.driveTFB(.8, 1100);
-        sleep(10);
-        chad.driveTLR(.8, 300);
-        sleep(10);
+        chad.driveTFB(.8, 200);
+        chad.rotateT(-.65, 110);
+        chad.driveTFB(.8, 2000);
+        flywheel.setPower(-1);
+        chad.driveTFB(.8, 600);
+        chad.rotateT(.65, 95);
 
-        flywheel.setPower(-.575);
+        sleep(750);
+        flick.setPosition(fShoot);
         sleep(500);
-        flick.setPosition(.35);
-        sleep(800);
-        flick.setPosition(.9);
+        flick.setPosition(fBack);
 
-        chad.driveTLR(.65, 375);
-        sleep(10);
-
-        sleep(100);
-        flick.setPosition(.35);
-        sleep(800);
-        flick.setPosition(.9);
-
-        chad.driveTLR(.65, 275);
-        sleep(10);
-
-        sleep(100);
-        flick.setPosition(.35);
-        sleep(800);
-        flick.setPosition(.9);
-        sleep(10);
-
-        flywheel.setPower(0);
-
-        // determines the rest of the code based on the starting stack of rings
-        if (zone.equals("A")) {
-            chad.rotateT(.8, 500);
-            sleep(10);
-            chad.driveTFB(.8, 850);
-            sleep(10);
-        }
-        else if (zone.equals("B")) {
-            chad.driveTFB(.8, 2000);
-            sleep(10);
-        }
-        else if (zone.equals("C")) {
-            chad.rotateT(.8, 150);
-            sleep(10);
-            chad.driveTFB(.8, 2800);
-            sleep(10);
-            chad.rotateT(.75, 300);
-        }
-
-        wobble.setPosition(0);
+        chad.driveTLR(-.65, 250);
+        sleep(750);
+        flick.setPosition(fShoot);
         sleep(500);
-        close.setPosition(0);
+        flick.setPosition(fBack);
+
+        chad.driveTLR(-.65, 250);
+        sleep(750);
+        flick.setPosition(fShoot);
         sleep(500);
-
-        if (zone.equals("A")) {
-            chad.driveTime(.75, 0, .75, 0, 250);
-            sleep(10);
-            chad.rotateT(-.7, 250);
-            chad.rotateT(.7, 275);
-        }
-        else if (zone.equals("B")) {
-            chad.driveTLR(.65, 250);
-        }
-
-        /*
-        if (zone.equals("A")) {
-            chad.rotateT(-.8, 500);
-            sleep(10);
-            chad.driveTFB(-.8, 500);
-            sleep(10);
-        }
-        else if (zone.equals("B")) {
-            chad.driveTFB(-.8, 500);
-            sleep(10);
-        }
-        else if (zone.equals("C")) {
-            chad.rotateT(-.8, 250);
-            sleep(10);
-            chad.driveTFB(-.8, 1000);
-            sleep(10);
-        }
-
-        chad.driveTFB(-.8, 3000);
-        sleep(10);
-
-        wobble.setPosition(.55);
-        sleep(10);
-        close.setPosition(0);
-        sleep(10);
-        chad.driveTFB(-.8, 50);
-        sleep(10);
-        wobble.setPosition(0);
-        sleep(10);
-        close.setPosition(.85);
-        sleep(10);
-
-        chad.driveTFB(-.8, 3000 + 50);
-        sleep(10);
-
-        if (zone.equals("A")) {
-            chad.rotateT(.8, 500);
-            sleep(10);
-            chad.driveTFB(.8, 500);
-            sleep(10);
-        }
-        else if (zone.equals("B")) {
-            chad.driveTFB(.8, 500);
-            sleep(10);
-        }
-        else if (zone.equals("C")) {
-            chad.rotateT(.8, 250);
-            sleep(10);
-            chad.driveTFB(.8, 1000);
-            sleep(10);
-        }
-
-        wobble.setPosition(.55);
-        sleep(10);
-        close.setPosition(0);
-        sleep(10);
-        chad.driveTFB(.8, 50);
-        sleep(10);
-        wobble.setPosition(0);
-        sleep(10);
-        close.setPosition(.85);
-        sleep(10);
-        */
+        flick.setPosition(fBack);
     }
 
     private void initVuforia() {
