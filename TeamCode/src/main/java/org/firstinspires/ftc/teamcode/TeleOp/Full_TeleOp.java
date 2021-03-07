@@ -92,7 +92,7 @@ public class Full_TeleOp extends OpMode
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
 
-        flick.setPosition(.9);
+        flick.setPosition(1);
         wobble.setPosition(wStart);
         close.setPosition(.85);
 
@@ -301,8 +301,8 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (rb2) flick.setPosition(.35);
-        else flick.setPosition(.9);
+        if (rb2) flick.setPosition(.78);
+        else flick.setPosition(1);
 
         /*
         if (b2) wobble.setPosition(0);
