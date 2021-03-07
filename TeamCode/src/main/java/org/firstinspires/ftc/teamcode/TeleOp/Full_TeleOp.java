@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
@@ -34,13 +35,17 @@ public class Full_TeleOp extends OpMode
     private DcMotor leftFront;
     private DcMotor rightFront;
     private DcMotor intake;
-    private DcMotor flywheel;
+    private DcMotorEx flywheel;
     private Servo flick;
     private Servo wobble;
     private Servo close;
 
     private double wStart;
     private double wEnd;
+
+    private double previousError;
+    private double previousTime;
+    private double flickTime;
 
     //private CRServo push;
     /*
@@ -63,7 +68,7 @@ public class Full_TeleOp extends OpMode
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         intake = hardwareMap.get(DcMotor.class, "intake");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
         flick = hardwareMap.get(Servo.class, "flick");
         wobble = hardwareMap.get(Servo.class, "wobble");
         flick = hardwareMap.get(Servo.class, "flick");
@@ -78,6 +83,10 @@ public class Full_TeleOp extends OpMode
 
         wStart = .5;
         wEnd = 0;
+
+        previousError = 0;
+        previousTime = 0;
+        flickTime = 0;
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -301,7 +310,10 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (rb2) flick.setPosition(.78);
+        if (rb2 && flywheel.getVelocity() >= 2340 && flywheel.getVelocity() <= 2360 && getRuntime() - flickTime <= 600) {
+            flick.setPosition(.78);
+            flickTime = getRuntime();
+        }
         else flick.setPosition(1);
 
         /*
@@ -312,9 +324,28 @@ public class Full_TeleOp extends OpMode
         else close.setPosition(.85);
         */
 
-        // Flywheel
+        /* Flywheel
         if (lb2) flywheel.setPower(1);
         else flywheel.setPower(0);
+        */
+        telemetry.addData("velocity", flywheel.getVelocity());
+
+        double targetSpeed = 2360;
+        double currentSpeed = flywheel.getVelocity();
+        double currentTime = getRuntime();
+        double currentError = targetSpeed - currentSpeed;
+        final double kp = 1.5;
+        final double ki = 0;
+        final double kd = .75;
+        double p = kp * currentError;
+        double i = ki * (currentError * (currentTime - previousTime));
+        double d = kd * (currentError - previousError) / (currentTime - previousTime);
+        double output = p + i + d;
+        previousError = currentError;
+        previousTime = currentTime;
+        if (lb2) flywheel.setVelocity(flywheel.getVelocity() + output);
+        else flywheel.setVelocity(0);
+
         /*
         double flypow;
         if (flywheel.getPower() < .5) flypow = 0;
