@@ -46,6 +46,7 @@ public class Full_TeleOp extends OpMode
     private double previousError;
     private double previousTime;
     private double flickTime;
+    private double ticks;
 
     //private CRServo push;
     /*
@@ -87,6 +88,7 @@ public class Full_TeleOp extends OpMode
         previousError = 0;
         previousTime = 0;
         flickTime = 0;
+        ticks = 0;
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -171,6 +173,12 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("right distance", rightDistance);
         telemetry.addData("back distance", backDistance);
         */
+
+        if (getRuntime() < 3000) flywheel.setPower(.8);
+        else if (getRuntime() < 4000) ticks = flywheel.getVelocity();
+        else if (getRuntime() < 4100) flywheel.setPower(0);
+
+
         double rm = rightx1;
         if (rm > -.1 && rm < .1) rm = 0;
         double pow;
@@ -310,7 +318,7 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (rb2 && flywheel.getVelocity() >= 2340 && flywheel.getVelocity() <= 2360 && getRuntime() - flickTime <= 600) {
+        if (rb2 && flywheel.getVelocity() > 1490 && flywheel.getVelocity() < 1510 && getRuntime() - flickTime <= 1000) {
             flick.setPosition(.78);
             flickTime = getRuntime();
         }
@@ -330,13 +338,13 @@ public class Full_TeleOp extends OpMode
         */
         telemetry.addData("velocity", flywheel.getVelocity());
 
-        double targetSpeed = 2360;
+        double targetSpeed = 1500;
         double currentSpeed = flywheel.getVelocity();
         double currentTime = getRuntime();
         double currentError = targetSpeed - currentSpeed;
-        final double kp = 1.5;
+        final double kp = 1;
         final double ki = 0;
-        final double kd = .75;
+        final double kd = 0;
         double p = kp * currentError;
         double i = ki * (currentError * (currentTime - previousTime));
         double d = kd * (currentError - previousError) / (currentTime - previousTime);
