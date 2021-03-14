@@ -129,28 +129,26 @@ public class AutonomousTime extends LinearOpMode {
         telemetry.addData("Zone", zone);
         telemetry.update();
 
-        chad.driveTFB(.8, 200);
         chad.rotateT(-.65, 110);
         chad.driveTFB(.8, 2000);
         flywheel.setPower(-1);
-        chad.driveTFB(.8, 600);
-        chad.rotateT(.65, 95);
+        chad.rotateT(.65, 110);
 
-        sleep(750);
+        sleep(1250);
         flick.setPosition(fShoot);
-        sleep(500);
+        sleep(1000);
         flick.setPosition(fBack);
 
         chad.driveTLR(-.65, 250);
-        sleep(750);
+        sleep(1250);
         flick.setPosition(fShoot);
-        sleep(500);
+        sleep(1000);
         flick.setPosition(fBack);
 
         chad.driveTLR(-.65, 250);
-        sleep(750);
+        sleep(1250);
         flick.setPosition(fShoot);
-        sleep(500);
+        sleep(1000);
         flick.setPosition(fBack);
     }
 
