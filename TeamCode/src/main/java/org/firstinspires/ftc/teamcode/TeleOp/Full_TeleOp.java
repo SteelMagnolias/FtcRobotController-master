@@ -39,6 +39,7 @@ public class Full_TeleOp extends OpMode
     private Servo flick;
     private Servo wobble;
     private Servo close;
+    private CRServo push;
 
     private double wStart;
     private double wEnd;
@@ -47,8 +48,8 @@ public class Full_TeleOp extends OpMode
     private double previousTime;
     private double flickTime;
     private double ticks;
+    private double targetSpeed;
 
-    //private CRServo push;
     /*
     private DistanceSensor disSensorFront;
     private DistanceSensor disSensorLeft;
@@ -74,7 +75,7 @@ public class Full_TeleOp extends OpMode
         wobble = hardwareMap.get(Servo.class, "wobble");
         flick = hardwareMap.get(Servo.class, "flick");
         close = hardwareMap.get(Servo.class, "close");
-        //push = hardwareMap.get(CRServo.class, "push");
+        push = hardwareMap.get(CRServo.class, "push");
         /*
         disSensorFront = hardwareMap.get(DistanceSensor.class, "sensorFront");
         disSensorLeft = hardwareMap.get(DistanceSensor.class, "sensorLeft");
@@ -107,12 +108,13 @@ public class Full_TeleOp extends OpMode
         wobble.setPosition(wStart);
         close.setPosition(.85);
 
-        //push.setPower(0);
+        push.setPower(0);
 
         flywheel.setPower(0);
         intake.setPower(0);
 
         target = 0;
+        targetSpeed = 1500;
     }
 
     /*
@@ -143,6 +145,7 @@ public class Full_TeleOp extends OpMode
         boolean b2 = gamepad2.b;
         boolean x2 = gamepad2.x;
         boolean y2 = gamepad2.y;
+        boolean buttonLeft2 = gamepad2.dpad_left;
         boolean buttonUp2 = gamepad2.dpad_up;
         boolean buttonDown2 = gamepad2.dpad_down;
         telemetry.addData("lefty1", lefty1);
@@ -162,6 +165,8 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("b2", b2);
         telemetry.addData("x2", x2);
         telemetry.addData("y2", y2);
+        telemetry.addData("80% power", targetSpeed);
+        telemetry.addData("buttonLeft2", buttonLeft2);
         /*
         double frontDistance = disSensorFront.getDistance(DistanceUnit.METER);
         double leftDistance = disSensorLeft.getDistance(DistanceUnit.METER);
@@ -174,10 +179,10 @@ public class Full_TeleOp extends OpMode
         telemetry.addData("back distance", backDistance);
         */
 
-        if (getRuntime() < 3000) flywheel.setPower(.8);
+      /*  if (getRuntime() < 3000) flywheel.setPower(.8);
         else if (getRuntime() < 4000) ticks = flywheel.getVelocity();
         else if (getRuntime() < 4100) flywheel.setPower(0);
-
+      */
 
         double rm = rightx1;
         if (rm > -.1 && rm < .1) rm = 0;
@@ -318,7 +323,7 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (rb2 && flywheel.getVelocity() > 1490 && flywheel.getVelocity() < 1510 && getRuntime() - flickTime <= 1000) {
+        if (rb2 && flywheel.getVelocity() > (targetSpeed - 10) && flywheel.getVelocity() < (targetSpeed + 10) && getRuntime() - flickTime <= 1000) {
             flick.setPosition(.78);
             flickTime = getRuntime();
         }
@@ -336,14 +341,20 @@ public class Full_TeleOp extends OpMode
         if (lb2) flywheel.setPower(1);
         else flywheel.setPower(0);
         */
+
+        if (buttonLeft2 && !lb2) {
+            flywheel.setPower(.8);
+            targetSpeed = flywheel.getVelocity();
+        }
+        else if (!lb2) flywheel.setPower(0);
+
         telemetry.addData("velocity", flywheel.getVelocity());
 
-        double targetSpeed = 1500;
         double currentSpeed = flywheel.getVelocity();
         double currentTime = getRuntime();
         double currentError = targetSpeed - currentSpeed;
-        final double kp = 1;
-        final double ki = 0;
+        final double kp = 1.2;
+        final double ki = 1.6;
         final double kd = 0;
         double p = kp * currentError;
         double i = ki * (currentError * (currentTime - previousTime));
@@ -352,7 +363,6 @@ public class Full_TeleOp extends OpMode
         previousError = currentError;
         previousTime = currentTime;
         if (lb2) flywheel.setVelocity(flywheel.getVelocity() + output);
-        else flywheel.setVelocity(0);
 
         /*
         double flypow;
@@ -374,15 +384,15 @@ public class Full_TeleOp extends OpMode
         // Intake
         if (buttonUp2) {
             intake.setPower(1);
-            //push.setPower(-1);
+            push.setPower(1);
         }
         else if (buttonDown2) {
             intake.setPower(-1);
-            //push.setPower(1);
+            push.setPower(-1);
         }
         else {
             intake.setPower(0);
-            //push.setPower(0);
+            push.setPower(0);
         }
 
         // Ensures Data Updates

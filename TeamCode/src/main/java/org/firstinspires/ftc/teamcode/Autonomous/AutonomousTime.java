@@ -41,16 +41,16 @@ public class AutonomousTime extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initVuforia();
-        initTfod();
+        //initVuforia();
+        //initTfod();
 
         telemetry.update();
         //waitForStart();
 
         String zone = "";
 
-        double fBack = .9;
-        double fShoot = .35;
+        double fBack = 1;
+        double fShoot = .78;
         double wUp = .5;
         double wDown = 0;
         double cClose = .85;
@@ -81,9 +81,7 @@ public class AutonomousTime extends LinearOpMode {
 
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        //telemetry.addData("Test", "test");
-        while (!opModeIsActive() && !isStopRequested()) {
+        /*while (!opModeIsActive() && !isStopRequested()) {
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
@@ -120,21 +118,22 @@ public class AutonomousTime extends LinearOpMode {
         if (tfod != null) {
             tfod.shutdown();
         }
+        */
 
         waitForStart();
 
-        tfod.shutdown();
+        //tfod.shutdown();
 
         telemetry.clearAll();
-        telemetry.addData("Zone", zone);
-        telemetry.update();
+        //telemetry.addData("Zone", zone);
+        //telemetry.update();
 
         chad.rotateT(-.65, 110);
-        chad.driveTFB(.8, 2000);
+        chad.driveTFB(.8, 2250);
         flywheel.setPower(-1);
         chad.rotateT(.65, 110);
 
-        sleep(1250);
+        sleep(1500);
         flick.setPosition(fShoot);
         sleep(1000);
         flick.setPosition(fBack);
@@ -145,7 +144,7 @@ public class AutonomousTime extends LinearOpMode {
         sleep(1000);
         flick.setPosition(fBack);
 
-        chad.driveTLR(-.65, 250);
+        chad.driveTLR(-.65, 200);
         sleep(1250);
         flick.setPosition(fShoot);
         sleep(1000);
