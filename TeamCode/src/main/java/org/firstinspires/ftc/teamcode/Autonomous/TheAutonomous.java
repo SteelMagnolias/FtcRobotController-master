@@ -139,9 +139,6 @@ public class TheAutonomous extends LinearOpMode {
         telemetry.addData("leftBack Position", leftBack.getCurrentPosition());
         telemetry.addData("rightBack Position", rightBack.getCurrentPosition());
 
-        /*
-        // shoot
-
         // strafe and shoot at power-shots
         for (int i = 0; i < 2; i++) {
             chad.driveLR(-.23, .25);
@@ -172,7 +169,7 @@ public class TheAutonomous extends LinearOpMode {
             chad.driveFB(-0, .8);
         }
 
-         */
+
     }
 
     private void initVuforia() {

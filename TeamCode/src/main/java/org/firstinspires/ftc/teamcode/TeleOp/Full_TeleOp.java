@@ -323,9 +323,9 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (rb2 && flywheel.getVelocity() > (targetSpeed - 10) && flywheel.getVelocity() < (targetSpeed + 10) && getRuntime() - flickTime <= 1000) {
-            flick.setPosition(.78);
-            flickTime = getRuntime();
+        if (rb2 /* && flywheel.getVelocity() > (targetSpeed - 10) && flywheel.getVelocity() < (targetSpeed + 10) && getRuntime() - flickTime <= 1000*/) {
+            flick.setPosition(.8);
+          //  flickTime = getRuntime();
         }
         else flick.setPosition(1);
 
@@ -342,11 +342,11 @@ public class Full_TeleOp extends OpMode
         else flywheel.setPower(0);
         */
 
-        if (buttonLeft2 && !lb2) {
+        if (buttonLeft2 /* && !lb2 */) {
             flywheel.setPower(.8);
-            targetSpeed = flywheel.getVelocity();
+        //    targetSpeed = flywheel.getVelocity();
         }
-        else if (!lb2) flywheel.setPower(0);
+        else /* if (!lb2)*/ flywheel.setPower(0);
 
         telemetry.addData("velocity", flywheel.getVelocity());
 
@@ -362,7 +362,7 @@ public class Full_TeleOp extends OpMode
         double output = p + i + d;
         previousError = currentError;
         previousTime = currentTime;
-        if (lb2) flywheel.setVelocity(flywheel.getVelocity() + output);
+       // if (lb2) flywheel.setVelocity(flywheel.getVelocity() + output);
 
         /*
         double flypow;

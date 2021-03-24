@@ -41,11 +41,11 @@ public class AutonomousTime extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //initVuforia();
-        //initTfod();
+        initVuforia();
+        initTfod();
 
         telemetry.update();
-        //waitForStart();
+        waitForStart();
 
         String zone = "";
 
@@ -81,7 +81,7 @@ public class AutonomousTime extends LinearOpMode {
 
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        /*while (!opModeIsActive() && !isStopRequested()) {
+        while (!opModeIsActive() && !isStopRequested()) {
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
@@ -118,37 +118,134 @@ public class AutonomousTime extends LinearOpMode {
         if (tfod != null) {
             tfod.shutdown();
         }
-        */
 
         waitForStart();
-
-        //tfod.shutdown();
+        tfod.shutdown();
 
         telemetry.clearAll();
-        //telemetry.addData("Zone", zone);
-        //telemetry.update();
+        telemetry.addData("Zone", zone);
+        telemetry.update();
 
-        chad.rotateT(-.65, 110);
+        chad.driveTFB(.65, 160);
+        sleep(50);
+        chad.rotateT(-.65, 160);
+        sleep(10);
         chad.driveTFB(.8, 2250);
         flywheel.setPower(-1);
-        chad.rotateT(.65, 110);
+        chad.rotateT(.65, 140);
 
-        sleep(1500);
+        sleep(1750);
         flick.setPosition(fShoot);
         sleep(1000);
         flick.setPosition(fBack);
 
-        chad.driveTLR(-.65, 250);
-        sleep(1250);
+        chad.driveTLR(-.65, 275);
+        sleep(1750);
         flick.setPosition(fShoot);
         sleep(1000);
         flick.setPosition(fBack);
 
-        chad.driveTLR(-.65, 200);
-        sleep(1250);
+        chad.driveTLR(-.5, 280);
+        sleep(1750);
         flick.setPosition(fShoot);
         sleep(1000);
         flick.setPosition(fBack);
+
+        //chad.driveTFB(.8, 600);
+
+        // determines the rest of the code based on the starting stack of rings
+        switch (zone) {
+            case "A":
+                chad.rotateT(.8, 500);
+                sleep(10);
+                chad.driveTFB(.8, 850);
+                sleep(10);
+                break;
+            case "B":
+                chad.driveTFB(.8, 2000);
+                sleep(10);
+                break;
+            case "C":
+                chad.rotateT(.8, 150);
+                sleep(10);
+                chad.driveTFB(.8, 2800);
+                sleep(10);
+                chad.rotateT(.75, 300);
+                break;
+        }
+
+        //wobble.setPosition(0);
+        //sleep(500);
+        close.setPosition(cOpen);
+        sleep(500);
+
+        if (zone.equals("A")) {
+            chad.driveTime(.75, 0, .75, 0, 250);
+            sleep(10);
+            chad.rotateT(-.7, 250);
+            chad.rotateT(.7, 275);
+        }
+        else if (zone.equals("B")) {
+            chad.driveTLR(.65, 250);
+        }
+
+        if (zone.equals("A")) {
+            chad.rotateT(-.8, 500);
+            sleep(10);
+            chad.driveTFB(-.8, 500);
+            sleep(10);
+        }
+        else if (zone.equals("B")) {
+            chad.driveTFB(-.8, 500);
+            sleep(10);
+        }
+        else if (zone.equals("C")) {
+            chad.rotateT(-.8, 250);
+            sleep(10);
+            chad.driveTFB(-.8, 1000);
+            sleep(10);
+        }
+
+        chad.driveTFB(-.8, 3000);
+        sleep(10);
+        wobble.setPosition(wUp);
+        sleep(10);
+        close.setPosition(cOpen);
+        sleep(10);
+        chad.driveTFB(-.8, 50);
+        sleep(10);
+        wobble.setPosition(wDown);
+        sleep(10);
+        close.setPosition(cClose);
+        sleep(10);
+        chad.driveTFB(-.8, 3000 + 50);
+        sleep(10);
+        if (zone.equals("A")) {
+            chad.rotateT(.8, 500);
+            sleep(10);
+            chad.driveTFB(.8, 500);
+            sleep(10);
+        }
+        else if (zone.equals("B")) {
+            chad.driveTFB(.8, 500);
+            sleep(10);
+        }
+        else if (zone.equals("C")) {
+            chad.rotateT(.8, 250);
+            sleep(10);
+            chad.driveTFB(.8, 1000);
+            sleep(10);
+        }
+        wobble.setPosition(wDown);
+        sleep(10);
+        close.setPosition(cOpen);
+        sleep(10);
+        chad.driveTFB(.8, 50);
+        sleep(10);
+        wobble.setPosition(wUp);
+        sleep(10);
+        close.setPosition(cClose);
+        sleep(10);
     }
 
     private void initVuforia() {
