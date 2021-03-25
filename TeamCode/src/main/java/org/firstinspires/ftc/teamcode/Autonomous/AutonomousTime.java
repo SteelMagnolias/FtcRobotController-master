@@ -45,7 +45,7 @@ public class AutonomousTime extends LinearOpMode {
         initTfod();
 
         telemetry.update();
-        waitForStart();
+        //waitForStart();
 
         String zone = "";
 
@@ -115,6 +115,7 @@ public class AutonomousTime extends LinearOpMode {
                 }
             }
         }
+
         if (tfod != null) {
             tfod.shutdown();
         }
@@ -126,6 +127,8 @@ public class AutonomousTime extends LinearOpMode {
         telemetry.addData("Zone", zone);
         telemetry.update();
 
+        // drives to powershots (off)
+        /*
         chad.driveTFB(.65, 160);
         sleep(50);
         chad.rotateT(-.65, 160);
@@ -133,27 +136,33 @@ public class AutonomousTime extends LinearOpMode {
         chad.driveTFB(.8, 2250);
         flywheel.setPower(-1);
         chad.rotateT(.65, 140);
+         */
 
-        sleep(1750);
+        // drives to shoot in the goals
+        chad.driveTFB(.8, 2800);
+        sleep(10);
+        chad.driveTLR(.35, 625);
+        flywheel.setPower(-1);
+        sleep(500);
         flick.setPosition(fShoot);
-        sleep(1000);
+        sleep( 450);
         flick.setPosition(fBack);
+        sleep(650);
+        flick.setPosition(fShoot);
+        sleep( 450);
+        flick.setPosition(fBack);
+        sleep(650);
+        flick.setPosition(fShoot);
+        sleep( 450);
+        flick.setPosition(fBack);
+        sleep(650);
+        chad.driveTFB(.65, 650);
 
-        chad.driveTLR(-.65, 275);
-        sleep(1750);
-        flick.setPosition(fShoot);
-        sleep(1000);
-        flick.setPosition(fBack);
-
-        chad.driveTLR(-.5, 280);
-        sleep(1750);
-        flick.setPosition(fShoot);
-        sleep(1000);
-        flick.setPosition(fBack);
 
         //chad.driveTFB(.8, 600);
 
         // determines the rest of the code based on the starting stack of rings
+        /*
         switch (zone) {
             case "A":
                 chad.rotateT(.8, 500);
@@ -246,6 +255,8 @@ public class AutonomousTime extends LinearOpMode {
         sleep(10);
         close.setPosition(cClose);
         sleep(10);
+
+         */
     }
 
     private void initVuforia() {
