@@ -36,13 +36,16 @@ public class Full_TeleOp extends OpMode
     private DcMotor rightFront;
     private DcMotor intake;
     private DcMotorEx flywheel;
+    private DcMotor lift;
     private Servo flick;
     private Servo wobble;
     private Servo close;
     private CRServo push;
 
-    private double wStart;
-    private double wEnd;
+    private double wStart;  // up
+    private double wEnd;    // down
+    private double cStart;  // closed
+    private double cEnd;    // open
 
     private double previousError;
     private double previousTime;
@@ -71,6 +74,7 @@ public class Full_TeleOp extends OpMode
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         intake = hardwareMap.get(DcMotor.class, "intake");
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+        lift = hardwareMap.get(DcMotor.class, "lift");
         flick = hardwareMap.get(Servo.class, "flick");
         wobble = hardwareMap.get(Servo.class, "wobble");
         flick = hardwareMap.get(Servo.class, "flick");
@@ -85,6 +89,8 @@ public class Full_TeleOp extends OpMode
 
         wStart = .5;
         wEnd = 0;
+        cStart = .5;
+        cEnd = 0;
 
         previousError = 0;
         previousTime = 0;
@@ -106,7 +112,7 @@ public class Full_TeleOp extends OpMode
 
         flick.setPosition(1);
         wobble.setPosition(wStart);
-        close.setPosition(.85);
+        close.setPosition(cStart);
 
         push.setPower(0);
 
@@ -362,6 +368,7 @@ public class Full_TeleOp extends OpMode
         double output = p + i + d;
         previousError = currentError;
         previousTime = currentTime;
+
        // if (lb2) flywheel.setVelocity(flywheel.getVelocity() + output);
 
         /*
@@ -402,37 +409,45 @@ public class Full_TeleOp extends OpMode
          *  wobble: up = .55, down = 0
          *  close: close = 0, open = .85
          */
+        double liftTime = 0;
         switch(grabberArm) {
             case START:
+                if (getRuntime() - liftTime <= 4000) lift.setPower(-.8);
+                else lift.setPower(0);
                 if (x2) {
-                    wobble.setPosition(wEnd);
-                    close.setPosition(0);
+                    wobble.setPosition(wStart);
+                    close.setPosition(cStart);
+
                     grabberArm = GrabberArm.GRAB;
                 }
                 break;
             case GRAB:
                 if (b2) {
-                    close.setPosition(.85);
+                    wobble.setPosition(wEnd);
+                    close.setPosition(cEnd);
                     grabberArm = GrabberArm.LIFT_INITIAL;
                 }
                 break;
             case LIFT_INITIAL:
                 if (x2) {
-                    wobble.setPosition(wStart);
+                    close.setPosition(wStart);
+                    liftTime = getRuntime();
                     grabberArm = GrabberArm.RELEASE;
                 }
                 break;
             case RELEASE:
+                if (getRuntime() - liftTime <= 4000) lift.setPower(.8);
+                else lift.setPower(0);
                 if (b2) {
-                    wobble.setPosition(wEnd);
-                    close.setPosition(0);
+                    close.setPosition(cEnd);
                     grabberArm = GrabberArm.LIFT_FINAL;
                 }
                 break;
             case LIFT_FINAL:
                 if (a2) {
-                    close.setPosition(.85);
+                    close.setPosition(cStart);
                     wobble.setPosition(wStart);
+                    liftTime = getRuntime();
                     grabberArm = GrabberArm.START;
                 }
                 break;
