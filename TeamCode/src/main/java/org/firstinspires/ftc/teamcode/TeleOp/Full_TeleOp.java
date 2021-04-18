@@ -36,7 +36,7 @@ public class Full_TeleOp extends OpMode
     private DcMotor rightFront;
     private DcMotor intake;
     private DcMotorEx flywheel;
-    private DcMotor lift;
+    //private DcMotor lift;
     private Servo flick;
     private Servo wobble;
     private Servo close;
@@ -74,7 +74,7 @@ public class Full_TeleOp extends OpMode
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         intake = hardwareMap.get(DcMotor.class, "intake");
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
-        lift = hardwareMap.get(DcMotor.class, "lift");
+      //  lift = hardwareMap.get(DcMotor.class, "lift");
         flick = hardwareMap.get(Servo.class, "flick");
         wobble = hardwareMap.get(Servo.class, "wobble");
         flick = hardwareMap.get(Servo.class, "flick");
@@ -101,7 +101,7 @@ public class Full_TeleOp extends OpMode
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
-        flywheel.setDirection(DcMotor.Direction.REVERSE);
+       //55 flywheel.setDirection(DcMotor.Direction.REVERSE);
 
         // Motor encoder setup
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -329,8 +329,8 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (rb2 /* && flywheel.getVelocity() > (targetSpeed - 10) && flywheel.getVelocity() < (targetSpeed + 10) && getRuntime() - flickTime <= 1000*/) {
-            flick.setPosition(.8);
+        if (a2 /* && flywheel.getVelocity() > (targetSpeed - 10) && flywheel.getVelocity() < (targetSpeed + 10) && getRuntime() - flickTime <= 1000*/) {
+            flick.setPosition(0);
           //  flickTime = getRuntime();
         }
         else flick.setPosition(1);
@@ -356,7 +356,7 @@ public class Full_TeleOp extends OpMode
 
         telemetry.addData("velocity", flywheel.getVelocity());
 
-        double currentSpeed = flywheel.getVelocity();
+       /* double currentSpeed = flywheel.getVelocity();
         double currentTime = getRuntime();
         double currentError = targetSpeed - currentSpeed;
         final double kp = 1.2;
@@ -412,8 +412,8 @@ public class Full_TeleOp extends OpMode
         double liftTime = 0;
         switch(grabberArm) {
             case START:
-                if (getRuntime() - liftTime <= 4000) lift.setPower(-.8);
-                else lift.setPower(0);
+                //if (getRuntime() - liftTime <= 4000) lift.setPower(-.8);
+                //else lift.setPower(0);
                 if (x2) {
                     wobble.setPosition(wStart);
                     close.setPosition(cStart);
@@ -436,8 +436,8 @@ public class Full_TeleOp extends OpMode
                 }
                 break;
             case RELEASE:
-                if (getRuntime() - liftTime <= 4000) lift.setPower(.8);
-                else lift.setPower(0);
+              //  if (getRuntime() - liftTime <= 4000) lift.setPower(.8);
+              //  else lift.setPower(0);
                 if (b2) {
                     close.setPosition(cEnd);
                     grabberArm = GrabberArm.LIFT_FINAL;

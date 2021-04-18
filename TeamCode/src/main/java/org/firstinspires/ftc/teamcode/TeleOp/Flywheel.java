@@ -44,7 +44,7 @@ public class Flywheel extends OpMode
         telemetry.addData("lefty1", lefty1);
 
         if (lb) {
-            flywheel.setPower(-1);
+            flywheel.setPower(1);
         } else {
             flywheel.setPower(0);
         }
@@ -57,6 +57,7 @@ public class Flywheel extends OpMode
         */
         // Intake
         /*if (rb)
+
             intake.setPower(0);
         else
             intake.setPower(1);
