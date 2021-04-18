@@ -329,9 +329,9 @@ public class Full_TeleOp extends OpMode
             rightBack.setPower(0);
         }
 
-        if (a2 /* && flywheel.getVelocity() > (targetSpeed - 10) && flywheel.getVelocity() < (targetSpeed + 10) && getRuntime() - flickTime <= 1000*/) {
+        if (lb2 /* && flywheel.getVelocity() > (targetSpeed - 10) && flywheel.getVelocity() < (targetSpeed + 10) && getRuntime() - flickTime <= 1000*/) {
             flick.setPosition(0);
-          //  flickTime = getRuntime();
+            //  flickTime = getRuntime();
         }
         else flick.setPosition(1);
 
@@ -409,7 +409,7 @@ public class Full_TeleOp extends OpMode
          *  wobble: up = .55, down = 0
          *  close: close = 0, open = .85
          */
-        double liftTime = 0;
+     /*   double liftTime = 0;
         switch(grabberArm) {
             case START:
                 //if (getRuntime() - liftTime <= 4000) lift.setPower(-.8);
@@ -460,7 +460,12 @@ public class Full_TeleOp extends OpMode
         }
         if (a2 && grabberArm != GrabberArm.START && grabberArm != GrabberArm.LIFT_FINAL) {
             grabberArm = GrabberArm.LIFT_FINAL;
-        }
+        } */
+
+        if (y2) wobble.setPosition(wStart);
+        if (b2) wobble.setPosition(wEnd);
+        if (a2) close.setPosition(cEnd);
+        if (x2) close.setPosition(cStart);
     }
     @Override
     public void stop() {
